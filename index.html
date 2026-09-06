@@ -48,7 +48,8 @@ header.top{position:sticky;top:0;z-index:40;background:rgba(253,247,239,.92);bac
 .sect{padding-block:44px 0}
 .sect .head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
 .sect h2{font-size:clamp(21px,3.4vw,27px)}
-.sect .count{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4)}
+.sect .count{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);text-decoration:none}
+a.count:hover{color:var(--ink)}
 .grid{display:grid;gap:16px}
 @media(min-width:820px){.grid{grid-template-columns:1fr 1fr}}
 
@@ -129,6 +130,11 @@ footer.foot{margin-top:56px;border-top:1px solid var(--line);background:rgba(255
   <div class="grid" id="studies"></div>
 </div>
 
+<div class="wrap sect">
+  <div class="head"><h2 data-t="h_msgs"></h2><a class="count" id="allmsgs" href="./boodskappe/" data-t="c_msgs"></a></div>
+  <div class="grid" id="msgs"></div>
+</div>
+
 <div class="wrap">
   <div class="how">
     <h2 data-t="h_how"></h2>
@@ -150,6 +156,7 @@ const T={
    verse:"“Oor die strome van die rivier is daar blydskap in die Godstad, in die heilige woning van die Allerhoogste.” — Psalm 46:5",
    h_plans:"Leesplanne",c_plans:"1 beskikbaar",
    h_studies:"Studies",c_studies:"1 beskikbaar",
+   h_msgs:"Boodskappe",c_msgs:"Alle boodskappe →",
    h_how:"Hoe om dit te gebruik",
    foot:"Strome van Lewe Gemeente · Boshof",
    soonT:"Nog op pad",soonP:"Hierdie afdelings kom by sodra daar iets is om te deel.",
@@ -162,12 +169,16 @@ const T={
    studies:[{badge:"Nuut",cls:"new",t:"Om Aanstoot te Neem",meta:"Agt sessies · Tweetalig",
      p:"Wat aanstoot werklik is, hoekom dit vasvang, en die pad daaruit — insluitend die aanstoot van die Kruis wat ons nie mag wegvat nie.",
      f:["8 sessies","Storie per sessie","Vrae vir jou én vir die groep","Selftoets"],go:"Open studie",h:"./studies/offence/"}],
-   soonList:["Boodskappe","Vir die huis","Hulpbronne vir leiers"]},
+   msgs:[{badge:"Nuutste",cls:"new",t:"Die Stryd Binne, en die Vryheid Daarbuite",meta:"Hendrik · 6 September 2026 · Aanstoot-reeks",
+     p:"Die stryd is binne my voordat dit tussen ons is. Die pad daaruit is nie om die stryd te wen nie, maar om myself daagliks aan die Gees oor te gee.",
+     f:["Galasiërs 5:17","2 Korintiërs 3:17","Werk saam met sessie 1"],go:"Lees boodskap",h:"./boodskappe/#/2026-09-06-hendrik"}],
+   soonList:["Vir die huis","Hulpbronne vir leiers","Eerste treë"]},
  en:{eyebrow:"Bible resources",title:"Strome van Lewe",
    sub:"Resources for your own time during the week, and for when the group meets. No sign-in needed — just share the link.",
    verse:"“There is a river whose streams make glad the city of God, the holy habitation of the Most High.” — Psalm 46:4",
    h_plans:"Reading plans",c_plans:"1 available",
    h_studies:"Studies",c_studies:"1 available",
+   h_msgs:"Messages",c_msgs:"All messages →",
    h_how:"How to use it",
    foot:"Strome van Lewe Church · Boshof",
    soonT:"Still to come",soonP:"These sections appear as soon as there is something to share.",
@@ -180,7 +191,10 @@ const T={
    studies:[{badge:"New",cls:"new",t:"The Trap of Offence",meta:"Eight sessions · Bilingual",
      p:"What offence really is, why it traps us, and the way out — including the offence of the Cross, which we must not remove.",
      f:["8 sessions","A story each session","Questions for you and for the group","Self-check"],go:"Open the study",h:"./studies/offence/"}],
-   soonList:["Messages","For the home","Leader resources"]}
+   msgs:[{badge:"Latest",cls:"new",t:"The Battle Inside, and the Freedom Outside It",meta:"Hendrik · 6 September 2026 · Offence series",
+     p:"The war is inside me before it is between us. The way out is not winning the war but handing myself over to the Spirit, daily.",
+     f:["Galatians 5:17","2 Corinthians 3:17","Goes with session 1"],go:"Read the message",h:"./boodskappe/#/2026-09-06-hendrik"}],
+   soonList:["For the home","Leader resources","First steps"]}
 };
 let lang="af";
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -194,12 +208,13 @@ function render(){
   const t=T[lang]; document.documentElement.lang=lang;
   document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t[el.dataset.t]);
   document.getElementById("plans").innerHTML=t.plans.map(card).join("");
-  document.getElementById("studies").innerHTML=t.studies.map(card).join("")+soon(t);
+  document.getElementById("studies").innerHTML=t.studies.map(card).join("");
+  document.getElementById("msgs").innerHTML=t.msgs.map(card).join("")+soon(t);
   document.getElementById("steps").innerHTML=t.steps.map((s,i)=>
     '<div class="step"><b><i>'+(i+1)+"</i>"+esc(s[0])+"</b><p>"+esc(s[1])+"</p></div>").join("");
   document.getElementById("bAF").setAttribute("aria-pressed",lang==="af");
   document.getElementById("bEN").setAttribute("aria-pressed",lang==="en");
-  document.querySelectorAll("#studies a.res, #plans a.res").forEach(a=>{
+  document.querySelectorAll("#studies a.res, #plans a.res, #msgs a.res").forEach(a=>{
     if(lang==="en") a.href = a.getAttribute("href").split("?")[0]+"?lang=en";
   });
 }
