@@ -164,7 +164,7 @@ const bookRe={};
   bookRe[L]=new RegExp("(?:\\b)("+n.join("|")+")\\s+(\\d+)(?::(\\d+(?:[–-]\\d+)?))?(?!\\d)","g");
 });
 
-let lang="af",DB=[],q="",F={speaker:"",series:"",year:"",book:"",media:""};
+let lang="af",DB=[],TAGS={},q="",F={speaker:"",series:"",year:"",book:"",media:""};
 const hasMedia=m=>!!(m.media&&(m.media.audio||m.media.video));
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const url=o=>"https://www.bible.com/bible/"+VER[lang].id+"/"+o;
@@ -214,8 +214,10 @@ function mdToHtml(md){
 }
 const uniq=a=>[...new Set(a)].sort();
 const books=m=>uniq(m.texts.map(t=>t.osis.split(".")[0]));
+function tagName(x,l){const e=TAGS[x];return (e&&e[l])?e[l]:x;}
+const tagWords=m=>m.tags.map(x=>x+" "+tagName(x,"af")+" "+tagName(x,"en")).join(" ");
 const haystack=m=>[m.title.af,m.title.en,m.summary.af,m.summary.en,m.speaker,m.series.af,m.series.en,
-  m.tags.join(" "),m.texts.map(t=>t.af+" "+t.en).join(" ")].join(" ").toLowerCase();
+  tagWords(m),m.texts.map(t=>t.af+" "+t.en).join(" ")].join(" ").toLowerCase();
 function filtered(){
   const t=q.trim().toLowerCase();
   return DB.filter(m=>(!F.speaker||m.speaker===F.speaker)&&(!F.series||m.series.af===F.series)
@@ -282,7 +284,7 @@ function renderMsg(id){
    "</span><em>"+esc(m.speaker)+" · "+dateStr(m.date)+"</em></div><h1>"+esc(m.title[lang])+"</h1>"+
    '<p class="sum">'+esc(m.summary[lang])+'</p><div class="chips">'+
    m.texts.map(x=>'<a href="'+url(x.osis)+'" target="_blank" rel="noopener">'+esc(x[lang])+" ↗</a>").join("")+
-   m.tags.map(x=>"<b>"+esc(x)+"</b>").join("")+"</div>"+
+   m.tags.map(x=>'<b title="'+esc(x)+'">'+esc(tagName(x,lang))+"</b>").join("")+"</div>"+
    mediaBlock(m,t)+
    (m.related&&m.related.length?'<div class="related"><span class="lbl">'+t.related+'</span><ul>'+
       m.related.map(r=>'<li><a href="'+r.href+'">'+esc(r[lang])+"</a></li>").join("")+'</ul></div>':"")+
@@ -311,6 +313,7 @@ document.addEventListener("click",function(){[].forEach.call(document.querySelec
   try{if((new URLSearchParams(location.search).get("lang")||"")==="en")lang="en";}catch(e){}
   fetch("index.json",{cache:"no-cache"}).then(r=>r.json()).then(function(d){
     DB=d.messages.slice().sort((a,b)=>b.date.localeCompare(a.date));
+    TAGS=d.tagname||{};
   }).catch(function(){DB=[];}).then(route);
 })();
 </script>
