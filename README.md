@@ -1,8 +1,8 @@
-# Strome van Lewe · Church Studies
+# Strome van Lewe · Bible resources
 
 Bible resources for Strome van Lewe Gemeente, Boshof. Static HTML — no build step, no framework, no dependencies. Every page is a single file you can open and edit.
 
-Live: **[stromevanlewe.netlify.app](https://stromevanlewe.netlify.app)** · mirror: [stromevanlewe.github.io/church-studies](https://stromevanlewe.github.io/church-studies/)
+Live: **[stromevanlewe.github.io/home](https://stromevanlewe.github.io/home/)**
 
 ---
 
@@ -17,6 +17,12 @@ bibleplans/3-month-plan/
   index.html                    90-day reading plan, 1 Sep – 30 Nov 2026
 studies/offence/
   index.html                    "Om Aanstoot te Neem" — 8-session study
+boodskappe/
+  index.html                    Message archive — list, search, four filters, reader
+  index.json                    Index of every message + the tag dictionary
+  m/
+    2026-09-06-hendrik.af.md    Message body, Afrikaans
+    2026-09-06-hendrik.en.md    Message body, English
 _redirects                      Netlify routing
 netlify.toml.txt                ⚠ see Deployment notes
 ```
@@ -44,19 +50,48 @@ Each session has: key verse in five translations · plain-language summary · te
 
 Plus a standing self-check panel ("Sit my voet in die strik?" / "Is my foot in the trap?") reachable from every session, and collapsible leader notes at the foot of the page.
 
-**Navigation:** sessions are `#s1` … `#s8` in the URL. *(These replaced the old `#week-1` … `#week-6` anchors — old links land on session 1.)*
+**Navigation:** sessions are `#s1` … `#s8` in the URL.
 
 **Language:** the page opens in Afrikaans. Add `?lang=en` for a direct English link, e.g. `/studies/offence/?lang=en#s3`.
 
----
-
-## Editing the content
+### Editing the study
 
 All eight sessions live in one readable `DATA` object near the top of `studies/offence/index.html`, before the rendering code. Change the text there and save — nothing to rebuild.
 
 Scripture references written in the body text are **linked automatically**. If the verse is explained elsewhere in the study, the link jumps to that session; otherwise it opens bible.com in whichever translation the reader has selected. You don't have to write the links.
 
-### Bible translation IDs (YouVersion)
+---
+
+## The message archive
+
+`boodskappe/` holds sermons and messages, built so that a message stays findable years later by speaker, series, year, Scripture, tag or free-text search.
+
+**Two kinds of file.** `index.json` holds everything structured — who, when, which series, which texts, which tags. The message itself is plain Markdown in `m/`, one file per language. The page renders the Markdown at runtime with the same typography as the study, so what you write is what ships. Adding a message never touches code.
+
+### Adding a message
+
+1. Write the two Markdown files as `m/<id>.af.md` and `m/<id>.en.md`. Keep the id in the pattern **date-speaker** (`2026-09-13-dawid`) — it sorts itself and still makes sense in three years.
+2. Add one entry at the top of `"messages"` in `index.json`. The `id` must match the file names exactly; that field causes more errors than all the others together.
+3. Validate the JSON at [jsonlint.com](https://jsonlint.com) before pushing. Ten seconds, and it names the broken line.
+
+### Fields worth knowing
+
+| Field | Notes |
+|---|---|
+| `texts` | `{af, en, osis}` — the `osis` code (`GAL.5.17`) builds the bible.com link |
+| `tags` | keys only, e.g. `["aanstoot", "vergifnis"]` |
+| `related` | pointers to a study session or another message; renders as a named link |
+| `media` | `{audio, video}` — a direct `.mp3`/`.m4a` gets a player; video becomes a button. Leave out what doesn't exist |
+
+**The tag dictionary.** `tagname` at the top of `index.json` maps each tag key to its Afrikaans and English display name, so `vergifnis` shows as *forgiveness* in English and the search box finds a message in either language. A tag that isn't in the dictionary simply displays as written — nothing breaks. Add a new tag there once and it is right forever.
+
+**Write each message to stand alone.** Never refer inside the body to "the study", a session number, "Sunday", or a recent series — a reader in three years has none of that context. Pointers belong in `related`, where they become a named, clickable link. Keep it to two or three; more and they stop meaning anything.
+
+**The landing page reads this file.** The "Nuutste / Latest" card on the home page is built from the newest entry in `index.json`. Add a message and the home page updates itself — don't edit the card by hand.
+
+---
+
+## Bible translation IDs (YouVersion)
 
 | Abbrev | Translation | ID |
 |---|---|---|
@@ -76,13 +111,13 @@ All eight key verses were verified word for word against each translation before
 
 **Case sensitivity.** Netlify resolves paths case-insensitively; **GitHub Pages does not.** A link to `BiblePlans/` will work on Netlify and 404 on GitHub Pages, where the folder is `bibleplans/`. Keep every folder and file name lower case, and always test on the GitHub Pages URL before trusting a link.
 
-**Relative links only.** No path starts with `/`. GitHub Pages serves this repo from the `/church-studies/` subdirectory, so an absolute path leaves the site. `./bibleplans/…` and `../../` work on both hosts.
+**Relative links only.** No path starts with `/`. GitHub Pages serves this repo from the `/home/` subdirectory, so an absolute path leaves the site. `./boodskappe/` and `../../` work on both hosts.
+
+**`?lang=en` goes before the `#`.** `./boodskappe/?lang=en#/2026-09-06-hendrik` works; putting the query after the hash makes it part of the fragment and the page never sees it.
 
 **`netlify.toml.txt` is ignored by Netlify.** The file must be named `netlify.toml` exactly. Whatever it configures has never been applied. Rename it or delete it.
 
-**`DEPLOY_x5f_GUIDE.md`** has an escaped underscore in its name; it was probably meant to be `DEPLOY_GUIDE.md`.
-
-**If Netlify stops updating:** check Site configuration → Build & deploy — that it is connected to this repo, that the branch is `main`, and that auto publish is on.
+**The old `church-studies` repo and the Netlify site are stale.** They still serve an early prototype. If `stromevanlewe.netlify.app` should point here, connect that Netlify site to this repo (Site configuration → Build & deploy → branch `main`, publish directory `.`) and rename `netlify.toml.txt`. Until then, `stromevanlewe.github.io/home` is the site.
 
 ---
 
@@ -103,4 +138,4 @@ Key verses are quoted in full; extra verses are given as paraphrases with a link
 ## Still to come
 
 - Leader's guide — extra explanation per session and possible answers to both sets of questions
-- Further sections on the landing page: Boodskappe · Vir die huis · Hulpbronne vir leiers
+- Further landing-page sections: Vir die huis · Hulpbronne vir leiers
