@@ -1,0 +1,56 @@
+{
+  "_lees_my": "Voeg 'n boodskap by: sit twee lêers in m/ (<id>.af.md en <id>.en.md) en voeg een inskrywing hier bo-aan by. Die 'media'-veld is opsioneel: 'audio' moet 'n direkte skakel na 'n klanklêer wees (.mp3/.m4a) — dan verskyn 'n speler op die blad; 'video' kan enige skakel wees (YouTube, Vimeo) en word 'n knoppie. Laat enige van die twee weg as dit nie bestaan nie, of laat 'media' heeltemal uit.",
+  "messages": [
+    {
+      "id": "2026-09-06-hendrik",
+      "date": "2026-09-06",
+      "speaker": "Hendrik",
+      "series": {
+        "af": "Aanstoot",
+        "en": "Offence"
+      },
+      "seriesNo": 1,
+      "title": {
+        "af": "Die Stryd Binne, en die Vryheid Daarbuite",
+        "en": "The Battle Inside, and the Freedom Outside It"
+      },
+      "summary": {
+        "af": "Die stryd is binne my voordat dit tussen ons is. Die pad daaruit is nie om die stryd te wen nie, maar om myself daagliks aan die Gees oor te gee — totdat liefde die ding word wat ek uit gewoonte kies.",
+        "en": "The war is inside me before it is between us. The way out is not winning the war but handing myself over to the Spirit, daily, until love becomes the thing I choose by habit."
+      },
+      "texts": [
+        {
+          "af": "Galasiërs 5:17",
+          "en": "Galatians 5:17",
+          "osis": "GAL.5.17"
+        },
+        {
+          "af": "2 Korintiërs 3:17",
+          "en": "2 Corinthians 3:17",
+          "osis": "2CO.3.17"
+        }
+      ],
+      "tags": [
+        "aanstoot",
+        "vlees-en-gees",
+        "vryheid",
+        "liefde",
+        "eenheid",
+        "transformasie",
+        "nuwe-skepping",
+        "gemeenskap"
+      ],
+      "media": {
+        "audio": "",
+        "video": ""
+      },
+      "related": [
+        {
+          "href": "../studies/offence/#s1",
+          "af": "Studie · Sessie 1 — Die strik",
+          "en": "Study · Session 1 — The trap"
+        }
+      ]
+    }
+  ]
+}
