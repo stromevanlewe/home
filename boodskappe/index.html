@@ -86,6 +86,10 @@ a.msg .refs b{font:500 11.5px/1 Inter,sans-serif;color:var(--ink-3);background:v
 a.msg .meta u{text-decoration:none;font:600 10.5px/1 Inter,sans-serif;letter-spacing:.05em;color:var(--ink-3);background:var(--warm);border:1px solid var(--warm-line);border-radius:999px;padding:5px 8px}
 .related{margin-top:18px;background:var(--sand);border:1px dashed var(--warm-line);border-radius:14px;padding:13px 16px;font-size:14px;color:var(--ink-2)}
 .related a{font-weight:600}
+.related .lbl{display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;font-size:11.5px;font-weight:700;color:var(--ink-3,var(--ink-2));opacity:.75}
+.related ul{list-style:none;margin:0;padding:0}
+.related li{margin:0;padding:3px 0 3px 15px;position:relative;line-height:1.45}
+.related li:before{content:'\2192';position:absolute;left:0;opacity:.5}
 .body{margin-top:26px}
 .body h2{font-size:clamp(19px,2.8vw,23px);line-height:1.2;margin:32px 0 10px;padding-top:22px;border-top:1px solid var(--line)}
 .body h2:first-child{border-top:0;padding-top:0;margin-top:0}
@@ -129,7 +133,7 @@ const T={
   count:n=>n===1?"1 boodskap":n+" boodskappe",
   none:"Niks gevind nie. Probeer 'n ander woord, of maak die filters skoon.",
   back:"Alle boodskappe",loading:"Laai…",fail:"Kon nie die boodskap laai nie.",
-  related:"Werk saam met:",listen:"Luister",watch:"Kyk die video",dl:"Laai af",hasMedia:"Klank",
+  related:"Werk saam met",listen:"Luister",watch:"Kyk die video",dl:"Laai af",hasMedia:"Klank",
   onlyMedia:"Om na te luister",
   foot:"Strome van Lewe Gemeente · Boshof"},
  en:{lib:"Library",eyebrow:"Messages",title:"Messages",
@@ -139,7 +143,7 @@ const T={
   count:n=>n===1?"1 message":n+" messages",
   none:"Nothing found. Try another word, or clear the filters.",
   back:"All messages",loading:"Loading…",fail:"Could not load the message.",
-  related:"Goes with:",listen:"Listen",watch:"Watch the video",dl:"Download",hasMedia:"Audio",
+  related:"Goes with",listen:"Listen",watch:"Watch the video",dl:"Download",hasMedia:"Audio",
   onlyMedia:"To listen to",
   foot:"Strome van Lewe Church · Boshof"}
 };
@@ -280,8 +284,8 @@ function renderMsg(id){
    m.texts.map(x=>'<a href="'+url(x.osis)+'" target="_blank" rel="noopener">'+esc(x[lang])+" ↗</a>").join("")+
    m.tags.map(x=>"<b>"+esc(x)+"</b>").join("")+"</div>"+
    mediaBlock(m,t)+
-   (m.related&&m.related.length?'<div class="related">'+t.related+" "+
-      m.related.map(r=>'<a href="'+r.href+'">'+esc(r[lang])+"</a>").join(" · ")+"</div>":"")+
+   (m.related&&m.related.length?'<div class="related"><span class="lbl">'+t.related+'</span><ul>'+
+      m.related.map(r=>'<li><a href="'+r.href+'">'+esc(r[lang])+"</a></li>").join("")+'</ul></div>':"")+
    '</div><div class="body" id="body"><p>'+t.loading+"</p></div></div>";
   window.scrollTo({top:0});
   fetch("m/"+m.id+"."+lang+".md",{cache:"no-cache"}).then(function(r){
