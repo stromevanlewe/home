@@ -169,7 +169,7 @@ const T={
    studies:[{badge:"Nuut",cls:"new",t:"Om Aanstoot te Neem",meta:"Agt sessies · Tweetalig",
      p:"Wat aanstoot werklik is, hoekom dit vasvang, en die pad daaruit — insluitend die aanstoot van die Kruis wat ons nie mag wegvat nie.",
      f:["8 sessies","Storie per sessie","Vrae vir jou én vir die groep","Selftoets"],go:"Open studie",h:"./studies/offence/"}],
-   msgs:[{badge:"Nuutste",cls:"new",t:"Die Stryd Binne, en die Vryheid Daarbuite",meta:"Hendrik · 6 September 2026 · Aanstoot-reeks",
+   msgs:[{badge:"Nuutste",cls:"new",t:"Tot Vryheid Geroep — Om Lief te Hê",meta:"Hendrik · 6 September 2026 · Aanstoot-reeks",
      p:"Die stryd is binne my voordat dit tussen ons is. Die pad daaruit is nie om die stryd te wen nie, maar om myself daagliks aan die Gees oor te gee.",
      f:["Galasiërs 5:17","2 Korintiërs 3:17","Werk saam met sessie 1"],go:"Lees boodskap",h:"./boodskappe/#/2026-09-06-hendrik"}],
    soonList:["Vir die huis","Hulpbronne vir leiers","Eerste treë"]},
@@ -191,33 +191,49 @@ const T={
    studies:[{badge:"New",cls:"new",t:"The Trap of Offence",meta:"Eight sessions · Bilingual",
      p:"What offence really is, why it traps us, and the way out — including the offence of the Cross, which we must not remove.",
      f:["8 sessions","A story each session","Questions for you and for the group","Self-check"],go:"Open the study",h:"./studies/offence/"}],
-   msgs:[{badge:"Latest",cls:"new",t:"The Battle Inside, and the Freedom Outside It",meta:"Hendrik · 6 September 2026 · Offence series",
+   msgs:[{badge:"Latest",cls:"new",t:"Called to Freedom — to Love",meta:"Hendrik · 6 September 2026 · Offence series",
      p:"The war is inside me before it is between us. The way out is not winning the war but handing myself over to the Spirit, daily.",
      f:["Galatians 5:17","2 Corinthians 3:17","Goes with session 1"],go:"Read the message",h:"./boodskappe/#/2026-09-06-hendrik"}],
    soonList:["For the home","Leader resources","First steps"]}
 };
-let lang="af";
+let lang="af",MSGS=[];
+const MON={af:["Januarie","Februarie","Maart","April","Mei","Junie","Julie","Augustus","September","Oktober","November","Desember"],
+          en:["January","February","March","April","May","June","July","August","September","October","November","December"]};
+function longDate(iso,l){const p=String(iso).split("-");return (+p[2])+" "+MON[l][+p[1]-1]+" "+p[0];}
+function withLang(h){if(lang!=="en")return h;const i=h.indexOf("#");
+  const base=(i<0?h:h.slice(0,i)).split("?")[0];const frag=i<0?"":h.slice(i);return base+"?lang=en"+frag;}
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-const card=c=>'<a class="res" href="'+c.h+'"><div class="body">'+
+const card=c=>'<a class="res" href="'+withLang(c.h)+'"><div class="body">'+
   '<span class="badge '+c.cls+'">'+esc(c.badge)+"</span><h3>"+esc(c.t)+'</h3><div class="meta">'+esc(c.meta)+"</div>"+
   "<p>"+esc(c.p)+'</p><div class="facts">'+c.f.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div>"+
   '<div class="go">'+esc(c.go)+" <i>→</i></div></div></a>";
 function soon(t){ return '<div class="soon"><h3>'+esc(t.soonT)+"</h3><p>"+esc(t.soonP)+"</p><ul>"+
   t.soonList.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul></div>"; }
+function msgCards(t){
+  if(!MSGS.length) return t.msgs.map(card).join("");
+  const proto=t.msgs[0]||{};
+  return MSGS.slice(0,1).map(function(m){
+    return card({badge:proto.badge||"",cls:"new",t:m.title[lang],
+      meta:m.speaker+" · "+longDate(m.date,lang)+" · "+m.series[lang]+(m.seriesNo?" · "+(lang==="af"?"Boodskap ":"Message ")+m.seriesNo:""),
+      p:m.summary[lang],
+      f:(m.texts||[]).slice(0,3).map(function(x){return x[lang];}),
+      go:proto.go||"",h:"./boodskappe/#/"+m.id});
+  }).join("");
+}
 function render(){
   const t=T[lang]; document.documentElement.lang=lang;
   document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t[el.dataset.t]);
   document.getElementById("plans").innerHTML=t.plans.map(card).join("");
   document.getElementById("studies").innerHTML=t.studies.map(card).join("");
-  document.getElementById("msgs").innerHTML=t.msgs.map(card).join("")+soon(t);
+  document.getElementById("msgs").innerHTML=msgCards(t)+soon(t);
   document.getElementById("steps").innerHTML=t.steps.map((s,i)=>
     '<div class="step"><b><i>'+(i+1)+"</i>"+esc(s[0])+"</b><p>"+esc(s[1])+"</p></div>").join("");
   document.getElementById("bAF").setAttribute("aria-pressed",lang==="af");
   document.getElementById("bEN").setAttribute("aria-pressed",lang==="en");
-  document.querySelectorAll("#studies a.res, #plans a.res, #msgs a.res").forEach(a=>{
-    if(lang==="en") a.href = a.getAttribute("href").split("?")[0]+"?lang=en";
-  });
 }
+fetch("./boodskappe/index.json",{cache:"no-cache"}).then(r=>r.json()).then(function(d){
+  MSGS=(d.messages||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
+}).catch(function(){}).then(render);
 document.getElementById("bAF").onclick=()=>{lang="af";render()};
 document.getElementById("bEN").onclick=()=>{lang="en";render()};
 try{ if((new URLSearchParams(location.search).get("lang")||"")==="en") lang="en"; }catch(e){}
