@@ -133,7 +133,7 @@ const T={
   count:n=>n===1?"1 boodskap":n+" boodskappe",
   none:"Niks gevind nie. Probeer 'n ander woord, of maak die filters skoon.",
   back:"Alle boodskappe",loading:"Laai…",fail:"Kon nie die boodskap laai nie.",
-  related:"Werk saam met",listen:"Luister",watch:"Kyk die video",dl:"Laai af",hasMedia:"Klank",
+  related:"Werk saam met",msgNo:"Boodskap",listen:"Luister",watch:"Kyk die video",dl:"Laai af",hasMedia:"Klank",
   onlyMedia:"Om na te luister",
   foot:"Strome van Lewe Gemeente · Boshof"},
  en:{lib:"Library",eyebrow:"Messages",title:"Messages",
@@ -143,7 +143,7 @@ const T={
   count:n=>n===1?"1 message":n+" messages",
   none:"Nothing found. Try another word, or clear the filters.",
   back:"All messages",loading:"Loading…",fail:"Could not load the message.",
-  related:"Goes with",listen:"Listen",watch:"Watch the video",dl:"Download",hasMedia:"Audio",
+  related:"Goes with",msgNo:"Message",listen:"Listen",watch:"Watch the video",dl:"Download",hasMedia:"Audio",
   onlyMedia:"To listen to",
   foot:"Strome van Lewe Church · Boshof"}
 };
@@ -248,7 +248,7 @@ function renderList(){
    '</div><div class="counting">'+t.count(rows.length)+"</div></div></div>"+
    '<div class="list">'+(rows.length?rows.map(m=>
      '<a class="msg" href="#/'+m.id+'"><div class="meta"><span>'+esc(m.series[lang])+
-       (m.seriesNo?" · "+m.seriesNo:"")+"</span><em>"+esc(m.speaker)+" · "+dateStr(m.date)+"</em>"+
+       (m.seriesNo?" · "+t.msgNo+" "+m.seriesNo:"")+"</span><em>"+esc(m.speaker)+" · "+dateStr(m.date)+"</em>"+
        (m.media&&(m.media.audio||m.media.video)?"<u>♪ "+t.hasMedia+"</u>":"")+"</div>"+
      "<h2>"+esc(m.title[lang])+"</h2><p>"+esc(m.summary[lang])+'</p><div class="refs">'+
      m.texts.map(x=>"<b>"+esc(x[lang])+"</b>").join("")+"</div></a>").join("")
@@ -280,7 +280,7 @@ function renderMsg(id){
   const t=T[lang],m=DB.filter(x=>x.id===id)[0];
   if(!m){location.hash="";return;}
   document.getElementById("app").innerHTML='<div class="reader"><a class="backlink" href="#">← '+t.back+"</a>"+
-   '<div class="rhead"><div class="meta"><span>'+esc(m.series[lang])+(m.seriesNo?" · "+m.seriesNo:"")+
+   '<div class="rhead"><div class="meta"><span>'+esc(m.series[lang])+(m.seriesNo?" · "+t.msgNo+" "+m.seriesNo:"")+
    "</span><em>"+esc(m.speaker)+" · "+dateStr(m.date)+"</em></div><h1>"+esc(m.title[lang])+"</h1>"+
    '<p class="sum">'+esc(m.summary[lang])+'</p><div class="chips">'+
    m.texts.map(x=>'<a href="'+url(x.osis)+'" target="_blank" rel="noopener">'+esc(x[lang])+" ↗</a>").join("")+
